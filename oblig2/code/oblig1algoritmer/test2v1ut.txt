@@ -1,0 +1,4 @@
+Nodes made: 9
+Moves made: 4
+Level: 4
+Path: DLDR

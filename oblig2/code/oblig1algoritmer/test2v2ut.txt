@@ -1,0 +1,4 @@
+Nodes made: 22
+Moves made: 12
+Level: 7
+Path: RDLURDD
