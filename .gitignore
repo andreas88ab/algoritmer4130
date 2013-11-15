@@ -1,0 +1,14 @@
+ld/
+nbbuild/
+dist/
+nddist/
+nbactions.xml
+
+*private*
+*.class
+
+*.jar
+*.war
+*.ear
+/code/oblig1algoritmer/dist/oi
+/oblig3/code/oblig3algoritmer/build/
