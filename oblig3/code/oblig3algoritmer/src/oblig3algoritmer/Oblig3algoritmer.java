@@ -7,6 +7,8 @@ import java.util.Scanner;
 public class Oblig3algoritmer {
 
     private static int n;
+    private static boolean[] nodesVisited;
+    private static int[][] arrNtemp;
 
     public static void main(String[] args) throws FileNotFoundException {
         Scanner in = new Scanner(new File(args[0]));
@@ -31,8 +33,8 @@ public class Oblig3algoritmer {
         }
 
         int[][] arrNf = new int[n][n];
-        int[][] arrNtemp = new int[n][n];
-        boolean[] nodesVisited = new boolean[n];
+        arrNtemp = new int[n][n];
+        nodesVisited = new boolean[n];
         int[][] paths = new int[n][n];
         int iPath = 0;
         int jPath = 0;
@@ -44,6 +46,7 @@ public class Oblig3algoritmer {
         while (!cut) {
             while (!allPath) {
 
+                //System.out.println("I = " + i);
                 //Finner første forekomst av en verdi på linjen i
                 while (j < n) {
                     if (arrNtemp[i][j] != 0) {
@@ -55,6 +58,7 @@ public class Oblig3algoritmer {
                         j = 0;
 
                     } else {
+                        
                         j++;
                     }
                 }
@@ -73,7 +77,8 @@ public class Oblig3algoritmer {
                     j = 0;
 
                 } else {
-                    j++;
+                    if(j+1 != n)
+                        j++;
                 }
 
                 if (j == n && i != n - 1) {
@@ -81,18 +86,24 @@ public class Oblig3algoritmer {
 
                 //Hvis n er nådd, eller cut = true
                 if ((i + 1) == n) {
-
+                    printArray(paths);
                     if (pathEqual(paths)) {
                         i = jumpBackinPath(paths);
-                        System.out.println("I = " + i);
-                        for (int k = i+2; k < n; k++) {
-                            nodesVisited[k] = false;
+                        jPath = i;
+                        System.out.println("I i path = " + (i));
+                        for (int k = i+2; k < i+1; k++) {
+                            if(!isNodeInPath(iPath, jPath, paths)){
+                                nodesVisited[k] = false;
+                            }
                         }
+//                        for (int k = i+2; k < n; k++) {
+//                            nodesVisited[k] = false;
+//                        }
 
-                        for(int k = 0; k < n; k++)
-                        {
-                            if(paths[iPath][k] == i+1)
-                                jPath = k+1;
+                        for (int k = 0; k < n; k++) {
+                            if (paths[iPath][k] == i + 1) {
+                                jPath = k + 1;
+                            }
                         }
                         for (int k = jPath + 1; k < paths.length; k++) {
                             System.out.println("null ut " + paths[iPath + 1][k]);
@@ -108,7 +119,7 @@ public class Oblig3algoritmer {
                         iPath++;
                         jPath = 0;
                     }
-                    printArray(paths);
+
 //                    allPath = true;
                 }
 //            for (boolean b : nodesVisited) {
@@ -139,15 +150,26 @@ public class Oblig3algoritmer {
         }
 
     }
+    
+    private static boolean isNodeInPath(int i, int j, int[][] p){
+        int node = p[i][j]-1;
+        for(int k = 0; k < n; k++){
+            if(arrNtemp[node][k] == node){
+                System.out.println("True = " + k);
+                return true;
+            }
+        }
+        return false;
+    }
 
     private static int updateMaxFlow(int[][] p, int[][] a, int end, int start) {
         int min = a[0][p[start][0] - 1];
         int k = 0;
         while (k != end) {
-            
-            if (a[p[start][k]-1][p[start][k + 1] - 1] < min) {
+
+            if (a[p[start][k] - 1][p[start][k + 1] - 1] < min) {
                 min = a[p[start][k] - 1][p[start][k + 1] - 1];
-                
+
             }
             System.out.println("min " + min + " end " + end + " start " + start);
             k++;
@@ -169,7 +191,7 @@ public class Oblig3algoritmer {
 
             return p[iPath][jPath - 2] - 1;
         } else {
-            //System.out.println("Ikke ferdig path");
+            System.out.println("Ikke ferdig path");
             return p[iPath][jPath - 1] - 1;
         }
     }
@@ -184,7 +206,7 @@ public class Oblig3algoritmer {
         boolean equal;
         for (int i = 0; i < iPath; i++) {
             equal = true;
-            for (int j = 0; j < p.length-1; j++) {
+            for (int j = 0; j < p.length - 1; j++) {
                 System.out.println("i equal = " + i + ", " + p[i][j] + " = " + p[iPath][j]);
                 if (p[i][j] != p[iPath][j]) {
                     equal = false;
