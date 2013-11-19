@@ -58,7 +58,7 @@ public class Oblig3algoritmer {
                         j++;
                     }
                 }
-                //System.out.println("i = " + i + "\nj = " + j);
+                System.out.println("i = " + i + "\nj = " + j);
 
                 if (nodesVisited[j] == false) {
                     //Setter mulig økning i flow. Sammenligner hver path
