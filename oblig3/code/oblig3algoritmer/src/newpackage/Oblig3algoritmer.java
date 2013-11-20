@@ -1,4 +1,4 @@
-package oblig3algoritmer;
+package newpackage;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -1,4 +1,4 @@
-package oblig3algoritmer;
+package newpackage;
 
 import java.util.*;
 import java.io.*;
@@ -61,19 +61,20 @@ public class Oblig3v2 {
         int iPath = 0;
         int jPath = 0;
         Node workingNode = nodes.get(i);
-        Node firstNodeInPath = nodes.get(i);
+//        Node firstNodeInPath = nodes.get(i);
         boolean[] nodesVisited = new boolean[n];
         int jumpBack = 1;
+        boolean nodeChanged = false;
         while (!cut) {
             //waits for all paths to be found
             while (!allPath) {
                 //waits for one path to be found
+                nodeChanged = false;
                 while (j < n) {
-
-
                     if (workingNode.paths[j] != 0 && !workingNode.visited[j] && !nodesVisited[j]) {
                         System.out.println("forbannade");
                         workingNode.visited[j] = true;
+                        nodeChanged = true;
                         nodesVisited[j] = true;
 //                        for (boolean b : nodesVisited) {
 //                            System.out.println(b);
@@ -99,6 +100,25 @@ public class Oblig3v2 {
 
                 }
                 printArray(paths);
+                if(!nodeChanged){
+                    jPath = jPath -1;
+                    if(jPath == -1){
+                        workingNode = nodes.get(0);
+                        System.out.println("workingNode = " + nodes.get(0));
+                    }else if(jPath >= 0){
+                        System.out.println("workingNode = " + nodes.get(paths[iPath][jPath] - 1).number
+                        + "jPath = " + jPath);
+                        workingNode = nodes.get(paths[iPath][jPath] - 1);
+                        nodesVisited[paths[iPath][jPath+1]-1] = false;
+                        for (boolean b : nodesVisited) {
+                            System.out.println(b);
+                        }
+                    }else{
+                        //allPath = true;
+                    }
+                    
+                    
+                }
                 //Hvis vi er kommet til node n (siste node)
                 if (nodesVisited[n - 1]) {
                     jPath = jPath -1;
@@ -107,20 +127,23 @@ public class Oblig3v2 {
                         i = 0;
                         j = 0;
                         System.out.println("jPath " + jPath);
-                        for(int k = jPath; k > jPath - jumpBack; k--){
-                            nodesVisited[paths[iPath][k]-1] = false;
-                            for (boolean b : nodesVisited) {
-                            System.out.println(b);
-                        }
-                            paths[iPath][k] = 0;
-                            System.out.println("NY");
-                            printArray(paths);
-                        }
-                        jPath = jPath - jumpBack++;
+//                        for(int k = jPath; k > jPath - jumpBack; k--){
+//                            nodesVisited[paths[iPath][k]-1] = false;
+//                            for (boolean b : nodesVisited) {
+//                            System.out.println(b);
+//                        }
+//                            paths[iPath][k] = 0;
+//                            System.out.println("NY");
+//                            printArray(paths);
+//                        }
+                        jPath = jPath - 1;
                         System.out.println("Nodenr " + nodes.get(paths[iPath][jPath] - 1).number);
                         workingNode = nodes.get(paths[iPath][jPath] - 1);
+                        System.out.println("workingNode = " + nodes.get(paths[iPath][jPath] - 1).number);
+                        paths[iPath][jPath+1] = 0;
                         
                     } else {
+                        System.out.println("Ferdig path funnet");
                         nodesVisited = new boolean[n];
                         for (int k = 0; k < nodes.size(); k++) {
                             nodes.get(k).visited = new boolean[n];
@@ -132,9 +155,9 @@ public class Oblig3v2 {
                         workingNode = nodes.get(0);
                     }
                 }
-                else if(){
-                    
-                }
+//                else if(){
+//                    
+//                }
                 //System.out.println("I = " + i + " J = " + j);
 
 
@@ -142,6 +165,10 @@ public class Oblig3v2 {
             System.out.println("galt");
             break;
         }
+    }
+    
+    public static getPath(Node workingNode){
+        
     }
     
     private static boolean allNodesVisited(Node n){
@@ -197,7 +224,7 @@ public class Oblig3v2 {
     }
 }
 
-class Node {
+class Nod1e {
 
     //An array that holds the nodes visited from this node.
     //Helps when finding the possible paths to find the shortest one
