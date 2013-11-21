@@ -62,47 +62,49 @@ public class Oblig3v4 {
         LinkedList<Node> fifo = new LinkedList<Node>();
 
         boolean cut = false;
+        int maxFlow = 0;
+        Node wN = new Node();
+        boolean[] visited;
         //Finds all paths
         while (!cut) {
-
-
             
             nodes.get(0).visited[0] = true;
             fifo.add(nodes.get(0));
-            Node wN = new Node();
+            
             while (!fifo.isEmpty()) {
+                visited = new boolean[n];
                 
-                System.out.println("kø: ");
-                for (int i = 0; i < fifo.size(); i++) {
-                    System.out.print(fifo.get(i).number + ", ");
-                }
-                System.out.println("");
-                
+
                 wN = copyNode(fifo.pollFirst());
-                System.out.println("wn = " + wN.number);
+                System.out.println("kø: ");
+//                ListIterator<Node> iterator = fifo.listIterator();
+//                while(iterator.hasNext()){
+//                    System.out.print(iterator.next().number + ", ");
+//                }
+                System.out.println("");
                 System.out.println(wN.path.toString());
                 if (wN.number == n) {
-                    System.out.println("wN.number = " + wN.number);
+//                    System.out.println("wN.number = " + wN.number);
                     break;
                 }
+                //
+                //Må legge inn en regel når køen ikke blir tom og ikke når frem til n
+                //
                 for (int i = 0; i < n; i++) {
-                    if (wN.paths.get(i) != 0 ) {
+                    if (wN.paths.get(i) != 0 && !wN.path.contains(i+1)) {
                         Node nN = copyNode(nodes.get(i));
                         nN.path = copyPath(wN);
                         nN.path.add(nN.number);
                         fifo.add(nN);
+                    } else {
                     }
-
                 }
 
             }
             //Lower the capacity
             if (wN.path.get(wN.path.size() - 1) == n) {
                 int flow = getFlow(wN.path, nodes);
-//                if (flow == -1) {
-//                    System.out.println("\nCut" + wN.path.toString());
-//                    break;
-//                }
+                maxFlow += flow;
                 int i = wN.path.get(0) - 1;
                 int j = wN.path.get(1) - 1;
                 for (int k = 2; k < wN.path.size(); k++) {
@@ -113,18 +115,22 @@ public class Oblig3v4 {
                 }
                 arrNf[i][j] += flow;
                 nodes.get(i).paths.set(j, nodes.get(i).paths.get(j) - flow);
-                System.out.print("\nFlow " + flow + "");
-                //printArray(arrNf);
+                System.out.println("Path = " + wN.path.toString());
+                System.out.println("\nFlow " + flow + "");
+                        printArray(arrNf);
+                        for(int k = 0; k < nodes.size(); k++){
+                            System.out.println(nodes.get(k).paths.toString());
+                        }
+            } else {
+                cut = true;
             }
-            System.out.println("\nPath" + wN.path.toString());
-            for (int i = 0; i < nodes.size(); i++) {
-                System.out.println(nodes.get(i).paths.toString());
-            }
-            printArray(arrNf);
+
             fifo = new LinkedList<Node>();
+
         }
-
-
+        System.out.println(maxFlow);
+        printArray(arrNf);
+        System.out.println(wN.path.toString());
     }
 
     public static Node copyNode(Node node) {
@@ -151,16 +157,16 @@ public class Oblig3v4 {
         int j = list.get(1) - 1;
         int min = nodes.get(i).paths.get(j);
         for (int k = 2; k < list.size(); k++) {
-            System.out.println("Flow" + nodes.get(i).paths.get(j));
+//            System.out.println("Flow" + nodes.get(i).paths.get(j));
             i = j;
             j = list.get(k) - 1;
 
             if (min > nodes.get(i).paths.get(j)) {
                 min = nodes.get(i).paths.get(j);
-                System.out.println("New flow: " + min);
+//                System.out.println("New flow: " + min);
             }
             if (nodes.get(i).paths.get(j) == 0) {
-                System.out.println("Flow" + nodes.get(i).paths.get(j));
+//                System.out.println("Flow" + nodes.get(i).paths.get(j));
                 return -1;
             }
         }
@@ -207,19 +213,9 @@ class Node {
     boolean[] visited;
     //Index in paths is the node a path lead to. The value is the capacity
     List<Integer> paths;
-    //Number of paths. When capacity reach 0, there is no more possible
-    //paths to that node from this one
-    int nPaths;
     //Temp path
     List<Integer> path;
     //Number is the nodenumber in the figure.
     int number;
-//    public void nPaths() {
-//        nPaths = 0;
-//        for (int i = 0; i < paths.length; i++) {
-//            if (paths[i] != 0) {
-//                nPaths++;
-//            }
-//        }
-//    }
+
 }
