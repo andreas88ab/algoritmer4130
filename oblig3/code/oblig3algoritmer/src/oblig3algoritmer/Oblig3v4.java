@@ -38,6 +38,7 @@ public class Oblig3v4 {
 
         //Initializing a lists of the nodes with apropriate variables
         nodes = new ArrayList<Node>();
+        int[][] arrNf = new int[n][n];
         Node newNode;
         for (int i = 0; i < n; i++) {
             newNode = new Node();
@@ -57,43 +58,73 @@ public class Oblig3v4 {
             System.out.println(newNode.paths.toString());
             nodes.add(newNode);
         }
-        System.out.println("Path nodes(0) " + nodes.get(0).path.toString());
 
         LinkedList<Node> fifo = new LinkedList<Node>();
 
         boolean cut = false;
         //Finds all paths
-        //while(!cut){
-        fifo.add(nodes.get(0));
-        Node wN;
-        while (!fifo.isEmpty()) {
+        while (!cut) {
 
-            wN = copyNode(fifo.pollFirst());
-            System.out.println("WorkingNode = " + wN.number);
-            for (int i = 0; i < n; i++) {
-                if (wN.paths.get(i) != 0) {
-                    nodes.get(wN.number - 1).visited[i] = true;
-                    Node nN = copyNode(nodes.get(i));
-                    nN.path = copyPath(wN);
-                    nN.path.add(nN.number);
-                    System.out.println(nN.path.toString());
-                    fifo.add(nN);
+
+            
+            nodes.get(0).visited[0] = true;
+            fifo.add(nodes.get(0));
+            Node wN = new Node();
+            while (!fifo.isEmpty()) {
+                
+                System.out.println("kø: ");
+                for (int i = 0; i < fifo.size(); i++) {
+                    System.out.print(fifo.get(i).number + ", ");
+                }
+                System.out.println("");
+                
+                wN = copyNode(fifo.pollFirst());
+                System.out.println("wn = " + wN.number);
+                System.out.println(wN.path.toString());
+                if (wN.number == n) {
+                    System.out.println("wN.number = " + wN.number);
+                    break;
+                }
+                for (int i = 0; i < n; i++) {
+                    if (wN.paths.get(i) != 0 ) {
+                        Node nN = copyNode(nodes.get(i));
+                        nN.path = copyPath(wN);
+                        nN.path.add(nN.number);
+                        fifo.add(nN);
+                    }
+
                 }
 
             }
-            if (wN.number == n) {
-                System.out.println("Siste" + wN.path.toString());
-                System.out.println("Ferdig1");
-                break;
+            //Lower the capacity
+            if (wN.path.get(wN.path.size() - 1) == n) {
+                int flow = getFlow(wN.path, nodes);
+//                if (flow == -1) {
+//                    System.out.println("\nCut" + wN.path.toString());
+//                    break;
+//                }
+                int i = wN.path.get(0) - 1;
+                int j = wN.path.get(1) - 1;
+                for (int k = 2; k < wN.path.size(); k++) {
+                    nodes.get(i).paths.set(j, nodes.get(i).paths.get(j) - flow);
+                    arrNf[i][j] += flow;
+                    i = j;
+                    j = wN.path.get(k) - 1;
+                }
+                arrNf[i][j] += flow;
+                nodes.get(i).paths.set(j, nodes.get(i).paths.get(j) - flow);
+                System.out.print("\nFlow " + flow + "");
+                //printArray(arrNf);
             }
-            //break;
-
+            System.out.println("\nPath" + wN.path.toString());
+            for (int i = 0; i < nodes.size(); i++) {
+                System.out.println(nodes.get(i).paths.toString());
+            }
+            printArray(arrNf);
+            fifo = new LinkedList<Node>();
         }
 
-        //}
-//        for (int i = 0; i < paths.size(); i++) {
-//            printList(paths.get(i));
-//        }
+
     }
 
     public static Node copyNode(Node node) {
@@ -115,6 +146,27 @@ public class Oblig3v4 {
         return newNode;
     }
 
+    public static int getFlow(List<Integer> list, List<Node> nodes) {
+        int i = list.get(0) - 1;
+        int j = list.get(1) - 1;
+        int min = nodes.get(i).paths.get(j);
+        for (int k = 2; k < list.size(); k++) {
+            System.out.println("Flow" + nodes.get(i).paths.get(j));
+            i = j;
+            j = list.get(k) - 1;
+
+            if (min > nodes.get(i).paths.get(j)) {
+                min = nodes.get(i).paths.get(j);
+                System.out.println("New flow: " + min);
+            }
+            if (nodes.get(i).paths.get(j) == 0) {
+                System.out.println("Flow" + nodes.get(i).paths.get(j));
+                return -1;
+            }
+        }
+        return min;
+    }
+
     public static List<Integer> copyPath(Node node) {
         List<Integer> list = new ArrayList<Integer>();
         for (int i = 0; i < node.path.size(); i++) {
@@ -128,41 +180,6 @@ public class Oblig3v4 {
             System.out.print(list.get(i).number + "  ");
         }
         System.out.print("\n");
-    }
-
-    private static boolean allNodesVisited(Node n) {
-        return true;
-    }
-
-    private static boolean pathEqual(int[][] p) {
-        int iPath = 0;
-        while (p[iPath + 1][0] != 0) {
-            iPath++;
-
-        }
-
-        boolean equal;
-        for (int i = 0; i < iPath; i++) {
-            equal = true;
-            for (int j = 0; j < p.length - 1; j++) {
-                System.out.println("i equal = " + i + ", " + p[i][j] + " = " + p[iPath][j]);
-                if (p[i][j] != p[iPath][j]) {
-                    equal = false;
-                }
-            }
-            if (equal) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static int maxFlow(int pMin, int nMin) {
-        if (nMin < pMin) {
-            return nMin;
-        } else {
-            return pMin;
-        }
     }
 
     public static void printArray(int[][] arr) {
@@ -197,7 +214,6 @@ class Node {
     List<Integer> path;
     //Number is the nodenumber in the figure.
     int number;
-
 //    public void nPaths() {
 //        nPaths = 0;
 //        for (int i = 0; i < paths.length; i++) {
