@@ -1,0 +1,8 @@
+2a
+2 directed hamiltonicity er NP-complete fordi vi gjetter 2 sykler i grafen (Non-determenistic algorithm), og verifiseringenen av om av alle nodene er besøkt er 2 x polynomial time. 2NP.
+
+2b
+1 - Properly NP-hard. Krever sammenligning og det spørres etter et nummer.
+2 - 
+3 - NP - Complete. Fordi du vet lengden av pathen, og du spør om det finnes en path med den gitte lengde. Inkludert x og y. Yes or No.
+4 - 

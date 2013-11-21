@@ -42,80 +42,85 @@ public class Oblig3v4 {
         for (int i = 0; i < n; i++) {
             newNode = new Node();
             newNode.number = i + 1;
-            newNode.paths = new int[n];
+            newNode.paths = new ArrayList<Integer>();
             newNode.visited = new boolean[n];
+            newNode.path = new ArrayList<Integer>();
+            newNode.path.add(1);
             for (int j = 0; j < n; j++) {
                 if (arrN[i][j] != 0) {
-                    newNode.paths[j] = arrN[i][j];
+                    newNode.paths.add(arrN[i][j]);
+                } else {
+                    newNode.paths.add(0);
                 }
             }
-            newNode.nPaths();
-            System.out.println(Arrays.toString(newNode.paths) + 
-                    "\n" + newNode.number + "\n" + newNode.nPaths);            
+            //newNode.nPaths();
+            System.out.println(newNode.paths.toString());
             nodes.add(newNode);
         }
+        System.out.println("Path nodes(0) " + nodes.get(0).path.toString());
 
-        paths = new ArrayList<List<Node>>();
-        
-        List<Node> start = new ArrayList<Node>();
-        start.add(nodes.get(0));
-        getPath(nodes.get(0), start);
-        System.out.println("Siste");
-        for(int i = 0; i < paths.size(); i++){
-            printList(paths.get(i));
-        }
-        
+        LinkedList<Node> fifo = new LinkedList<Node>();
 
-    }
+        boolean cut = false;
+        //Finds all paths
+        //while(!cut){
+        fifo.add(nodes.get(0));
+        Node wN;
+        while (!fifo.isEmpty()) {
 
-    public static List<Node> getPath(Node workingNode, List<Node> p) {
-        
-        if (workingNode.number == n) {
-            System.out.println("return");
-            return p;
-        }
-        for (int i = 0; i < n; i++) {
-//            System.out.println("I = " + i);
-            System.out.println("Workingnode = " +  workingNode.number);
-            System.out.println("her " + workingNode.paths[i] + ". I = " + i);
-            if (workingNode.paths[i] != 0 && !workingNode.visited[i]) {
-                System.out.println("I = " + i);
-                Node temp = workingNode;
-                workingNode.visited[i] = true;
-                
-//                System.out.println("Node " + p.get(p.size() - 1).get(p.get(p.size() - 1).size() - 1 ).number);
-                if (!p.contains(workingNode) || workingNode.number == 1) {
-                    //p.get(p.size() - 1).get(p.get(p.size() - 1).size() - 1 )
-                    workingNode = nodes.get(i);
-//                    System.out.println("jupp");
-                    List<Node> cp = copyPath(p);
-                    
-                    
-                    cp.add(workingNode);
-                    
-                    printList(cp);
-                    
-                    List<Node> res = getPath(workingNode, cp);
-                    if(res != null){
-                        paths.add(res);
-                    }
-                } else {
-                    workingNode = temp;
-//                    System.out.println("Nope");
-                    
+            wN = copyNode(fifo.pollFirst());
+            System.out.println("WorkingNode = " + wN.number);
+            for (int i = 0; i < n; i++) {
+                if (wN.paths.get(i) != 0) {
+                    nodes.get(wN.number - 1).visited[i] = true;
+                    Node nN = copyNode(nodes.get(i));
+                    nN.path = copyPath(wN);
+                    nN.path.add(nN.number);
+                    System.out.println(nN.path.toString());
+                    fifo.add(nN);
                 }
-            }
-        }
-        return null;
 
+            }
+            if (wN.number == n) {
+                System.out.println("Siste" + wN.path.toString());
+                System.out.println("Ferdig1");
+                break;
+            }
+            //break;
+
+        }
+
+        //}
+//        for (int i = 0; i < paths.size(); i++) {
+//            printList(paths.get(i));
+//        }
     }
 
-    public static List<Node> copyPath(List<Node> list) {
-        List<Node> cp = new ArrayList<Node>();
-        for (int i = 0; i < list.size(); i++) {
-            cp.add(list.get(i));
+    public static Node copyNode(Node node) {
+        Node newNode = new Node();
+        newNode.number = node.number;
+        newNode.visited = new boolean[n];
+        newNode.path = new ArrayList<Integer>();
+        newNode.paths = new ArrayList<Integer>();
+        for (int i = 0; i < n; i++) {
+            newNode.paths.add(node.paths.get(i));
+
+            newNode.visited[i] = node.visited[i];
+
         }
-        return cp;
+
+        for (int i = 0; i < node.path.size(); i++) {
+            newNode.path.add(node.path.get(i));
+        }
+        return newNode;
+    }
+
+    public static List<Integer> copyPath(Node node) {
+        List<Integer> list = new ArrayList<Integer>();
+        for (int i = 0; i < node.path.size(); i++) {
+            list.add(node.path.get(i));
+        }
+        return list;
     }
 
     public static void printList(List<Node> list) {
@@ -184,19 +189,21 @@ class Node {
     //Helps when finding the possible paths to find the shortest one
     boolean[] visited;
     //Index in paths is the node a path lead to. The value is the capacity
-    int[] paths;
+    List<Integer> paths;
     //Number of paths. When capacity reach 0, there is no more possible
     //paths to that node from this one
     int nPaths;
+    //Temp path
+    List<Integer> path;
     //Number is the nodenumber in the figure.
     int number;
 
-    public void nPaths() {
-        nPaths = 0;
-        for (int i = 0; i < paths.length; i++) {
-            if (paths[i] != 0) {
-                nPaths++;
-            }
-        }
-    }
+//    public void nPaths() {
+//        nPaths = 0;
+//        for (int i = 0; i < paths.length; i++) {
+//            if (paths[i] != 0) {
+//                nPaths++;
+//            }
+//        }
+//    }
 }
