@@ -1,8 +1,11 @@
 2a
 2 directed hamiltonicity er NP-complete fordi vi gjetter 2 sykler i grafen (Non-determenistic algorithm), og verifiseringenen av om av alle nodene er besøkt er 2 x polynomial time. 2NP.
 
+Det finnes ikke to cycles i den gitte figuren som ikke deler noder, så denne figuren er ikke
+
 2b
 1 - Properly NP-hard. Krever sammenligning og det spørres etter et nummer.
-2 - 
+2 - Polynomial. Dijkstras algorithm løser på polynomial time.
 3 - NP - Complete. Fordi du vet lengden av pathen, og du spør om det finnes en path med den gitte lengde. Inkludert x og y. Yes or No.
-4 - 
+4 - Properly NP-hard. Det er ikke no ja nei oppgave.
+5 - Polynomial. Det spørres et ja nei spørsmål. Bruker brute force for å prøve å finne en vei med start + slutt + 3 noder til. Gå til en nabonode -> reduser antall noder som er igjen -> er du i mål og antall noder igjen = 0 (ja, nei).
