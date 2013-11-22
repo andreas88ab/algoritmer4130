@@ -23,6 +23,7 @@ public class Oblig3v4 {
         int[][] arrN = new int[n][n];
         int x = 0;
         int y = 0;
+        nodes = new ArrayList<Node>();
         while (in.hasNextInt() && x < n) {
             int tall = in.nextInt();
             if (y == n) {
@@ -44,7 +45,6 @@ public class Oblig3v4 {
             newNode = new Node();
             newNode.number = i + 1;
             newNode.paths = new ArrayList<Integer>();
-            newNode.visited = new boolean[n];
             newNode.path = new ArrayList<Integer>();
             newNode.path.add(1);
             for (int j = 0; j < n; j++) {
@@ -54,8 +54,7 @@ public class Oblig3v4 {
                     newNode.paths.add(0);
                 }
             }
-            //newNode.nPaths();
-            System.out.println(newNode.paths.toString());
+            //System.out.println(newNode.paths.toString());
             nodes.add(newNode);
         }
 
@@ -64,25 +63,23 @@ public class Oblig3v4 {
         boolean cut = false;
         int maxFlow = 0;
         Node wN = new Node();
-        boolean[] visited;
+        int steps = 0;
         //Finds all paths
         while (!cut) {
             
-            nodes.get(0).visited[0] = true;
+//            nodes.get(0).visited[0] = true;
             fifo.add(nodes.get(0));
             
             while (!fifo.isEmpty()) {
-                visited = new boolean[n];
-                
 
                 wN = copyNode(fifo.pollFirst());
-                System.out.println("kø: ");
+//                System.out.println("kø: ");
 //                ListIterator<Node> iterator = fifo.listIterator();
 //                while(iterator.hasNext()){
 //                    System.out.print(iterator.next().number + ", ");
 //                }
-                System.out.println("");
-                System.out.println(wN.path.toString());
+//                System.out.println("");
+//                System.out.println(wN.path.toString());
                 if (wN.number == n) {
 //                    System.out.println("wN.number = " + wN.number);
                     break;
@@ -105,6 +102,7 @@ public class Oblig3v4 {
             if (wN.path.get(wN.path.size() - 1) == n) {
                 int flow = getFlow(wN.path, nodes);
                 maxFlow += flow;
+                steps++;
                 int i = wN.path.get(0) - 1;
                 int j = wN.path.get(1) - 1;
                 for (int k = 2; k < wN.path.size(); k++) {
@@ -115,12 +113,12 @@ public class Oblig3v4 {
                 }
                 arrNf[i][j] += flow;
                 nodes.get(i).paths.set(j, nodes.get(i).paths.get(j) - flow);
-                System.out.println("Path = " + wN.path.toString());
-                System.out.println("\nFlow " + flow + "");
-                        printArray(arrNf);
-                        for(int k = 0; k < nodes.size(); k++){
-                            System.out.println(nodes.get(k).paths.toString());
-                        }
+//                System.out.println("Path = " + wN.path.toString());
+//                System.out.println("\nFlow " + flow + "");
+//                        printArray(arrNf);
+//                        for(int k = 0; k < nodes.size(); k++){
+//                            System.out.println(nodes.get(k).paths.toString());
+//                        }
             } else {
                 cut = true;
             }
@@ -131,19 +129,16 @@ public class Oblig3v4 {
         System.out.println(maxFlow);
         printArray(arrNf);
         System.out.println(wN.path.toString());
+        System.out.println(steps);
     }
 
     public static Node copyNode(Node node) {
         Node newNode = new Node();
         newNode.number = node.number;
-        newNode.visited = new boolean[n];
         newNode.path = new ArrayList<Integer>();
         newNode.paths = new ArrayList<Integer>();
         for (int i = 0; i < n; i++) {
             newNode.paths.add(node.paths.get(i));
-
-            newNode.visited[i] = node.visited[i];
-
         }
 
         for (int i = 0; i < node.path.size(); i++) {
@@ -207,10 +202,6 @@ public class Oblig3v4 {
 }
 
 class Node {
-
-    //An array that holds the nodes visited from this node.
-    //Helps when finding the possible paths to find the shortest one
-    boolean[] visited;
     //Index in paths is the node a path lead to. The value is the capacity
     List<Integer> paths;
     //Temp path
